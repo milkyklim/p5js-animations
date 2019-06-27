@@ -51,7 +51,7 @@ const sketch = (s) => {
     if (s.width < bananoLogoCurrent.width)
       scale = s.width / bananoLogoCurrent.width;
     if (s.height < bananoLogoCurrent.height){
-      tmp = s.height / bananoLogoCurrent.height;
+      let tmp = s.height / bananoLogoCurrent.height;
       scale = tmp < scale ? tmp : scale;
     }
 
