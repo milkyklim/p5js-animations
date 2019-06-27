@@ -13,7 +13,7 @@ var classes
       this.colorForeground = colorForeground;
 
       this.maxSpeed = 6;
-      this.size = 3;
+      this.size = 10;
       this.offset = 80; // offset to compensate for noise
 
       this.reset(this.s.random(this.s.height));
