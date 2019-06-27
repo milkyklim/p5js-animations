@@ -13,7 +13,7 @@ const sketch = ( s ) => {
     let raindropNum; // max number of drops to be drawn on the screen
     let rainDrops = []; // the array holding the RainDrop objects
     let rainSplashes = []; // the array holding the RainSplash objects
-    let splashFrames = 8; // number of frames for the splash animation
+    // let splashFrames = 8; // number of frames for the splash animation
     let isPressed = false; // bollean to check if mouse/screen was pressed
     
     // local but passed 
@@ -37,7 +37,7 @@ const sketch = ( s ) => {
         // myCanvas.parent('rain');
         // Populate the rainDrops array with RainDrop objects
         raindropNum = 800/3; //windowWidth/3;
-        for(var i = 0; i < raindropNum; i++){
+        for(let i = 0; i < raindropNum; i++){
           rainDrops.push(new RainDrop(s, colBG, colFG, 3));
         }
       }
@@ -56,15 +56,21 @@ const sketch = ( s ) => {
         s.background('rgba(' + s.red(colBG) + ',' + s.green(colBG) + ',' + s.blue(colBG) + ',' + 0.5 + ')');
         // iterate thgough the rainDrops array to update and draw its objects
         for(let i = 0; i < rainDrops.length; i++){
-          rainDrops[i].update();
+          let rs = rainDrops[i].update();
+          if (rs != null)
+            rainSplashes.push(rs);
           rainDrops[i].draw();
         }
         // iterate through rhe rainSplashes array to update and draw its objects
         for(let j = 0; j < rainSplashes.length; j++){
           // if the frame of a RainSplash is less that the max value of frames we update and draw it
-          if(rainSplashes[j].change < splashFrames){
+          if(rainSplashes[j].change < rainSplashes[j].splashFrames){
             rainSplashes[j].update();
             rainSplashes[j].draw();
+
+
+            console.log(rainSplashes[j]);
+            
           // else we update, draw it and then remove it from the array
           } else{
             rainSplashes[j].update();

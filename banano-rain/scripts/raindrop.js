@@ -7,7 +7,7 @@ var classes
   class RainDrop{
       // the only input the object takes is size
       constructor(sketch, colBG, colFG, _size){
-        this.s = sketch
+        this.s = sketch;
 
         // DEBUG: goes to raindrop
         this.maxSpeed = 6; // max speed of the drops
@@ -15,8 +15,6 @@ var classes
 
         this.colBG = colBG;
         this.colFG = colFG;
-
-        // this.rainSplashes = rainSplashes;
 
         this.size = _size;
         this.end = this.s.random(this.horizon, this.s.height);// the Y position in which the object will restart
@@ -29,6 +27,9 @@ var classes
       }
       // function to update the RainDrop values
       update(){
+
+        let res = null;
+
         // if the Y position is less that the END position, then the drop keeps falling
         if(this.y < this.end){
           this.x += this.s.map(this.s.noise(this.s.millis()/1000), 0, 1, -1, 1)*2; //we add noise to the X position to emulate wind
@@ -36,13 +37,17 @@ var classes
         } else {
         //else it creates a new RainSplash object on the END position
           // rainSplashes.push(new RainSplash(this.x, this.y, this.z, (this.y / this.height) * 1));
+          res = new RainSplash(this.s, this.x, this.y, this.z, (this.y / this.s.height) * 1, this.colBG, this.colFG)
           // values are reset
           this.end = this.s.random(this.horizon, this.s.height);
           this.x = this.s.random(-80, this.s.width + 80);
           this.y = 0;
           this.z = this.s.map(this.end, this.horizon, this.s.height, 0, 1);
           this.speed = this.s.map(this.end, 0, this.s.height, 1, this.maxSpeed);
+
         }
+
+        return res;
       }
       // function to draw the object
       draw(){
