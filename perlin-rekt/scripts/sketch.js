@@ -1,5 +1,3 @@
-// TODO: check, maybe this is not the best way
-
 // p5.disableFriendlyErrors = true;
 
 const sketch = (s) => {
@@ -13,7 +11,6 @@ const sketch = (s) => {
   const FONTPATH = 'assets/fonts/Flatiron/Flatiron Casual.ttf';
 
   const NAME = "rekt";
-
 
   // globals
   let font;
@@ -62,20 +59,16 @@ const sketch = (s) => {
       s.background(160);
       drawWords(NWORDS, s.width * .5, letters, boundingBox);
       drawLinesWithVertices(NLINES, NVERTICES);
-      // noLoop();
     }
   }
 
-  // always centerered text; works best for one word
-  function drawLetters(letters, bb) {
-    let gShifts = {
-      'x': s.width / 2,
-      'y': s.height / 2
-    };
-    drawLetters(letters, bb, gShifts);
+  s.windowResized = () => {
+    let divWidth = document.getElementById(NAME).clientWidth;
+    let divHeight = document.getElementById(NAME).clientHeight;
+    s.resizeCanvas(divWidth, divHeight);
   }
 
-  function drawLetters(letters, bb, gShifts) {
+  const drawLetters = (letters, bb, gShifts={'x': s.width/2,'y': s.height/2}) => {
     // imp: 
     // x0 is the left-most pixel
     // y0 is the baseline
@@ -84,7 +77,7 @@ const sketch = (s) => {
 
     for (let j = 0; j < letters.length; j++) {
       s.push();
-      s.translate(gShifts.x - textWidth / 2, gShifts.y + textHeight / 2);
+      s.translate(gShifts.x - textWidth/2, gShifts.y + textHeight/2);
       s.beginShape();
       drawLetter(letters, j);
       s.endShape(s.CLOSE);
@@ -94,14 +87,13 @@ const sketch = (s) => {
     }
   }
 
-  function drawLetter(letters, letterIdx) {
+  const drawLetter = (letters, letterIdx) => {
     let xOffset = getInWordOffset(letters, letterIdx);
     let nPoints = letters[letterIdx].getPath(0, 0, FONTSIZE).commands.length;
 
     if (letterIdx != 0) { // if not R
       for (let i = 0; i < nPoints; i++) {
         let cmd = letters[letterIdx].getPath(0, 0, FONTSIZE).commands[i];
-        // vertex(cmd.x + xOffset, cmd.y);
         let jitteredPos = jitterPositions(cmd);
         s.vertex(jitteredPos.x + xOffset, jitteredPos.y);
       }
@@ -111,14 +103,13 @@ const sketch = (s) => {
   }
 
   // fix the hole in the R letter
-  function fixR(letter, nPoints, xOffset) {
+  const fixR = (letter, nPoints, xOffset) => {
     // todo: this fix tou have to iterate though all cmd values 
     // and find those that are Z -> this is the termination symbol
     let innerIdx = nPoints;
     for (let j = 0; j < nPoints; j++) {
       let cmd = letter.getPath(0, 0, FONTSIZE).commands[j];
       if (cmd.type != 'Z') { // termination type
-        // vertex(cmd.x + xOffset, cmd.y);
         let jitteredPos = jitterPositions(cmd);
         s.vertex(jitteredPos.x + xOffset, jitteredPos.y);
       } else {
@@ -130,7 +121,6 @@ const sketch = (s) => {
     s.beginContour();
     for (let j = innerIdx; j < nPoints; j++) {
       let cmd = letter.getPath(0, 0, FONTSIZE).commands[j];
-      // vertex(cmd.x + xOffset, cmd.y);
       let jitteredPos = jitterPositions(cmd);
       s.vertex(jitteredPos.x + xOffset, jitteredPos.y);
     }
@@ -139,9 +129,8 @@ const sketch = (s) => {
 
   // nWords centered rekt words
   const drawWords = (nWords, x, letters, bb) => {
-    let yOffset = Math.round(s.height / (nWords + 1)); // this one seems to be correct
+    let yOffset = Math.round(s.height / (nWords + 1));
     for (let y = yOffset; y < s.height; y += yOffset) {
-      console.log(y);
       if (y == yOffset)
         s.noFill();
       else {
@@ -156,9 +145,9 @@ const sketch = (s) => {
     }
   }
 
-  function jitterPositions(pos) {
+  const jitterPositions = (pos) => {
     let maxShift = 20;
-    let curShift = 0.01;
+    // let curShift = 0.01;
     shift = shift + 0.06;
 
     let xShift = s.map(s.noise(shift), 0, 1, -maxShift, maxShift);
@@ -171,43 +160,19 @@ const sketch = (s) => {
     return newPos;
   }
 
-  // DEBUG: function
-  function drawBoundingBox(bb) {
-    s.rectMode(s.CORNERS);
-    s.noFill();
-    s.strokeWeight(3);
-    s.rect(bb.x1, bb.y1, bb.x2, bb.y2);
-
-    // reset the defaults
-    s.strokeWeight(1);
-    s.fill(255, 0, 0);
-  }
-
-  function getInWordOffset(letters, letterIdx) {
+  const getInWordOffset = (letters, letterIdx) => {
     let xOffset = 0;
     for (let k = 0; k < letterIdx; k++)
       xOffset += letters[k].advanceWidth * fontScale;
     return xOffset;
   }
 
-  s.windowResized = () => {
-    let divWidth = document.getElementById(NAME).clientWidth;
-    let divHeight = document.getElementById(NAME).clientHeight;
-    s.resizeCanvas(divWidth, divHeight);
-  }
-
-  // function mousePressed() {
-  //   saveFrames('frames/out', 'png', 5, 10, function(data) {
-  //     print(data);
-  //   });
-  // }
-
   // draw curved lines
-  function drawLinesWithVertices(nLines, nVertices) {
+  const drawLinesWithVertices = (nLines, nVertices) => {
     let xOffset = s.height / nLines;
     let yOffset = s.width / nVertices;
     let maxShift = 50;
-    let curShift = 0.01;
+    // let curShift = 0.01;
     s.noFill();
     for (let h = 0; h <= (s.height + xOffset); h += xOffset) {
       s.beginShape();
@@ -220,6 +185,23 @@ const sketch = (s) => {
     }
   }
 
+  // DEBUG: function
+  const drawBoundingBox = (bb) => {
+    s.rectMode(s.CORNERS);
+    s.noFill();
+    s.strokeWeight(3);
+    s.rect(bb.x1, bb.y1, bb.x2, bb.y2);
+
+    // reset the defaults
+    s.strokeWeight(1);
+    s.fill(255, 0, 0);
+  }
+
+  // function mousePressed() {
+  //   saveFrames('frames/out', 'png', 5, 10, function(data) {
+  //     print(data);
+  //   });
+  // }
 
 }
 
