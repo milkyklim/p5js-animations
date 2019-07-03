@@ -190,8 +190,10 @@ const sketch = (s) => {
     return xOffset;
   }
 
-  function windowResized() {
-    resizeCanvas(windowWidth, windowHeight);
+  s.windowResized = () => {
+    let divWidth = document.getElementById(NAME).clientWidth;
+    let divHeight = document.getElementById(NAME).clientHeight;
+    s.resizeCanvas(divWidth, divHeight);
   }
 
   // function mousePressed() {
